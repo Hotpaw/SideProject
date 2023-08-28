@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
 public class UiManager : MonoBehaviour
 {
+    public GameObject descWindow;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +25,18 @@ public class UiManager : MonoBehaviour
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
         return results.Count > 0;
+    }
+    public void DescWinEnable()
+    {
+
+        if (descWindow.activeInHierarchy)
+        {
+
+       descWindow.SetActive(false);
+        }
+        else
+        {
+            descWindow.SetActive(true);
+        }
     }
 }

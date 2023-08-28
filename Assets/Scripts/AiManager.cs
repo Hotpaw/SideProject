@@ -11,7 +11,7 @@ public class AiManager : MonoBehaviour
     void Start()
     {
       navMesh = FindObjectOfType<NavMeshSurface>();
-        navMesh.BuildNavMesh();
+      
     }
 
     // Update is called once per frame
@@ -21,7 +21,7 @@ public class AiManager : MonoBehaviour
     }
     public void BuildNavemshSurface()
     {
-        navMesh.UpdateNavMesh(navMesh.navMeshData);
+       
     }
 
   

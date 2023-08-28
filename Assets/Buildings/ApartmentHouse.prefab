@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e254cf48054c24685138c1cffd76f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorPoint: {fileID: 0}
+  doorPoint: {fileID: 2816978170711062698}
 --- !u!54 &8008978583597491106
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -141,7 +141,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f98c2d0490dce4eb025067d0512a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hunger: 0
+  hunger: 10
   faith: 0
-  age: 0
+  age: 5
   points: []
+  hungerCooldown: 15
+  ageCooldwon: 1
+  isFull: 0
