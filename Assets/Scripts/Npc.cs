@@ -10,8 +10,10 @@ public class Npc : MonoBehaviour
     public float hunger;
     public float faith;
     public float age;
+    public bool happy;
 
     public List<Transform> points;
+    public GameObject graveStone;
 
     NavMeshAgent agent;
     float timer;
@@ -20,7 +22,8 @@ public class Npc : MonoBehaviour
     public float hungerCooldown;
     float ageTimer;
     public float ageCooldwon;
-    private List<Transform> foodPos;
+    public List<Transform> foodPos;
+    public List<Transform> Taverns;
 
     public bool isFull;
     // Start is called before the first frame update
@@ -29,6 +32,7 @@ public class Npc : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         GetPosition();
         isFull = false;
+      
         cooldown = 10;
       
     }
@@ -57,7 +61,7 @@ public class Npc : MonoBehaviour
             age++;
             if (age >= 100)
             {
-                gameObject.SetActive(false);
+                OnDeath();
             }
         }
         if(hungerTimer >= hungerCooldown)
@@ -66,13 +70,14 @@ public class Npc : MonoBehaviour
             hungerTimer = 0;
             if(hunger <= 0)
             {
-                gameObject.SetActive(false);
+                OnDeath();
             }
         }
     }
     public void GetPosition()
     {
         points.Clear();
+        foodPos.Clear();
         
 
 
@@ -81,31 +86,59 @@ public class Npc : MonoBehaviour
         {
             points.Add(building.transform);
         }
-        Food[] foods = FindObjectsOfType<Food>();
-       
-       
-       if(foods.Length > 0 && isFull == false)
+        foreach (var building in buildManager.buildingsInScene)
         {
-            GetClosestFood(foods);
+            if (building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !Taverns.Contains(building.transform))
+            {
+                Taverns.Add(building.transform);
+            }
 
-         
-                if (GetClosestFood(foods).gameObject.activeInHierarchy)
-                {
-                    agent.SetDestination(GetClosestFood(foods).transform.position);
-                   
-                }
-                else
-                {
-                    agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
-                }
+
+        }
+
+        Food[] foods = FindObjectsOfType<Food>();
+       foreach(var food in foods)
+        {
+            foodPos.Add(food.transform);
+        }
+
+
+       
+
+
+
+        if (foods.Length > 0 && isFull == false && happy == true)
+        {
+            GetClosestTransform(foodPos);
+
+
+            if (GetClosestTransform(foodPos).gameObject.activeInHierarchy)
+            {
+                agent.SetDestination(GetClosestTransform(foodPos).transform.position);
+
+            }
+            else
+            {
+                agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
+            }
+
+
+        }
+        else if (happy == false && Taverns.Count > 0)
+        {
             
+            
+               agent.SetDestination(GetClosestTransform(Taverns).transform.position);
 
+           
         }
         else
         {
-        agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
-
+            agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
         }
+
+
+
     }
     public void OnRenderObject()
     {
@@ -132,14 +165,20 @@ public class Npc : MonoBehaviour
             StartCoroutine(fed());
             hunger++;
         }
+        if(collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
+        {
+            Debug.Log(" HAPPY ");
+            happy = true;
+        }
     }
 
-    Transform GetClosestFood(Food[] Foods)
+
+    Transform GetClosestTransform(List<Transform> list)
     {
         Transform bestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
-        foreach (Food potentialTarget in Foods)
+        foreach (Transform potentialTarget in list)
         {
             Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
@@ -157,6 +196,11 @@ public class Npc : MonoBehaviour
         isFull = true;
         yield return new WaitForSeconds(15f);
         isFull = false;
+    }
+    public void OnDeath()
+    {
+        Instantiate(graveStone, transform.position, graveStone.transform.localRotation);
+        gameObject.SetActive(false);
     }
 
 }

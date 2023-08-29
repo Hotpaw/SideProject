@@ -36,16 +36,21 @@ public class BuildManager : MonoBehaviour
 
                 if (!hit.collider.CompareTag("Building") && !hit.collider.CompareTag("Enviroment"))
                 {
-                   GameObject Building = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
+                   GameObject newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
+                   
                    
                     AiManager ai = FindObjectOfType<AiManager>();
                     ai.BuildNavemshSurface();
-                    buildingsInScene.Add(Building);
-                    Transform spawnpoint = Building.GetComponent<Building>().doorPoint;
-
-                    for (int i = 0; i < Random.Range(1,5); i++)
+                    buildingsInScene.Add(newBuilding);
+                   
+                    if(BuildID != 4 && BuildID != 5)
                     {
-                        Instantiate(npcs[0].gameObject, spawnpoint.position , npcs[0].transform.localRotation);
+                        Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                        for (int i = 0; i < Random.Range(1,5); i++)
+                        {
+                            Instantiate(npcs[0].gameObject, spawnpoint.position , npcs[0].transform.localRotation);
+                        }
+
                     }
                 }
               

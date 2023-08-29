@@ -144,7 +144,11 @@ MonoBehaviour:
   hunger: 10
   faith: 0
   age: 5
+  happy: 0
   points: []
+  graveStone: {fileID: 8935479186093378071, guid: 8bf85ecc2e88bc4448b7157595680705, type: 3}
   hungerCooldown: 15
   ageCooldwon: 1
+  foodPos: []
+  Taverns: []
   isFull: 0

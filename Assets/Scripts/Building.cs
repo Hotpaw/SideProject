@@ -7,6 +7,8 @@ public class Building : MonoBehaviour
 {
     Rigidbody rb;
     public Transform doorPoint;
+    public enum BuildingType { House, Graveyard, Tavern}
+    public BuildingType houseType;
    
     // Start is called before the first frame update
     void Start()
@@ -18,11 +20,7 @@ public class Building : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(rb.velocity.magnitude > 0)
-        {
-
-        rb.velocity = Vector3.zero;
-        }
+      
     }
     public void OnCollisionStay(Collision collision)
     {
