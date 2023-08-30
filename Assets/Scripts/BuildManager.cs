@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class BuildManager : MonoBehaviour
 {
-    public List<GameObject> buildingsInScene;
-    public List<GameObject> buildings;
+    public List<Building> buildingsInScene;
+    public List<Building> buildings;
+    public List<GameObject> objects;
     public  List<Npc> npcs;
     UiManager uiManager;
 
@@ -36,17 +37,18 @@ public class BuildManager : MonoBehaviour
 
                 if (!hit.collider.CompareTag("Building") && !hit.collider.CompareTag("Enviroment"))
                 {
-                   GameObject newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
+                 
+                   Building newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
                    
                    
                     AiManager ai = FindObjectOfType<AiManager>();
                     ai.BuildNavemshSurface();
                     buildingsInScene.Add(newBuilding);
                    
-                    if(BuildID != 4 && BuildID != 5)
+                    if(BuildID != 4 && BuildID != 5 && BuildID != 6)
                     {
                         Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                        for (int i = 0; i < Random.Range(1,5); i++)
+                        for (int i = 0; i < BuildID; i++)
                         {
                             Instantiate(npcs[0].gameObject, spawnpoint.position , npcs[0].transform.localRotation);
                         }

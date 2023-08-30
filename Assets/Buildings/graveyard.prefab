@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 1661035758994400906}
   m_Layer: 0
   m_Name: graveyard
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorPoint: {fileID: 8868242872563173520}
-  mytype: 1
+  houseType: 0
 --- !u!1 &8160173893509749190
 GameObject:
   m_ObjectHideFlags: 0

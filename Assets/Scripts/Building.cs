@@ -7,7 +7,7 @@ public class Building : MonoBehaviour
 {
     Rigidbody rb;
     public Transform doorPoint;
-    public enum BuildingType { House, Graveyard, Tavern}
+    public enum BuildingType { House, Graveyard, Tavern, Food}
     public BuildingType houseType;
    
     // Start is called before the first frame update

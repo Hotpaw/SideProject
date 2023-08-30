@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4379933222521841702}
   m_Layer: 0
   m_Name: medium house
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorPoint: {fileID: 5867702077971053358}
+  houseType: 0
 --- !u!208 &4379933222521841702
 NavMeshObstacle:
   m_ObjectHideFlags: 0

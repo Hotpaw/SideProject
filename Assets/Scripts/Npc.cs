@@ -10,6 +10,8 @@ public class Npc : MonoBehaviour
     public float hunger;
     public float faith;
     public float age;
+    public float maxAge;
+    public bool hungry;
     public bool happy;
 
     public List<Transform> points;
@@ -17,7 +19,7 @@ public class Npc : MonoBehaviour
 
     NavMeshAgent agent;
     float timer;
-    float cooldown;
+    public float cooldown;
     float hungerTimer;
     public float hungerCooldown;
     float ageTimer;
@@ -25,15 +27,16 @@ public class Npc : MonoBehaviour
     public List<Transform> foodPos;
     public List<Transform> Taverns;
 
-    public bool isFull;
+    
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         GetPosition();
-        isFull = false;
+     
+        hungry = false;
       
-        cooldown = 10;
+       
       
     }
 
@@ -41,7 +44,7 @@ public class Npc : MonoBehaviour
     void Update()
     {
         Timers();
-        if (agent.remainingDistance < 0.5 || timer >= cooldown)
+        if (agent != null && agent.remainingDistance < 0.5 || timer >= cooldown)
         {
             timer = 0;
             GetPosition();
@@ -59,7 +62,8 @@ public class Npc : MonoBehaviour
         {
             ageTimer = 0;
             age++;
-            if (age >= 100)
+            checkForAge();
+            if (age >= maxAge)
             {
                 OnDeath();
             }
@@ -68,6 +72,7 @@ public class Npc : MonoBehaviour
         {
             hunger--;
             hungerTimer = 0;
+            CheckForHunger();
             if(hunger <= 0)
             {
                 OnDeath();
@@ -76,30 +81,47 @@ public class Npc : MonoBehaviour
     }
     public void GetPosition()
     {
-        points.Clear();
-        foodPos.Clear();
+       
         
 
 
         BuildManager buildManager = FindObjectOfType<BuildManager>();
-        foreach(var building in buildManager.buildingsInScene)
+        foreach(Building building in buildManager.buildingsInScene)
         {
-            points.Add(building.transform);
-        }
-        foreach (var building in buildManager.buildingsInScene)
-        {
-            if (building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !Taverns.Contains(building.transform))
+            if (!points.Contains(building.transform) && building.GetComponent<Building>().houseType != Building.BuildingType.Tavern && !building.CompareTag("food"))
+            {
+
+                points.Add(building.transform);
+            }
+            if(!Taverns.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !building.CompareTag("food"))
             {
                 Taverns.Add(building.transform);
             }
-
-
         }
+        //foreach (var building in buildManager.buildingsInScene)
+        //{
+        //    if (building.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
+        //    {
+               
+        //        Taverns.Add(building.transform);
+
+        //    }
+        //    else
+        //    {
+
+        //    }
+
+
+        //}
 
         Food[] foods = FindObjectsOfType<Food>();
        foreach(var food in foods)
         {
+            if (!foodPos.Contains(food.transform))
+            {
+
             foodPos.Add(food.transform);
+            }
         }
 
 
@@ -107,7 +129,7 @@ public class Npc : MonoBehaviour
 
 
 
-        if (foods.Length > 0 && isFull == false && happy == true)
+        if (foods.Length > 0 && hungry == true && happy == true)
         {
             GetClosestTransform(foodPos);
 
@@ -158,20 +180,49 @@ public class Npc : MonoBehaviour
     public void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.CompareTag("food") && isFull == false)
+        if (collision.gameObject.CompareTag("food") && hungry == false)
         {
             collision.gameObject.GetComponent<Food>().foodStorage--;
             GetPosition();
-            StartCoroutine(fed());
+           
             hunger++;
         }
-        if(collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
+        if(collision.gameObject.CompareTag("Building"))
         {
+            if(collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
             Debug.Log(" HAPPY ");
             happy = true;
         }
+        else
+        {
+            return;
+        }
     }
-
+    public void CheckForHunger()
+    {
+        if(hunger <= 5)
+        {
+            Debug.Log("HUNGRY");
+            hungry = true;
+           
+        }
+        else
+        {
+            hungry = false;
+        }
+    }
+    public void checkForAge()
+    {
+        if(age >= maxAge / 2)
+        {
+            int random = Random.Range(0,100);
+            if(random <= 5 && happy == true)
+            {
+                Debug.Log("I AM SAD AND OLD");
+                happy = false;
+            }
+        }
+    }
 
     Transform GetClosestTransform(List<Transform> list)
     {
@@ -191,12 +242,7 @@ public class Npc : MonoBehaviour
 
         return bestTarget;
     }
-    IEnumerator fed()
-    {
-        isFull = true;
-        yield return new WaitForSeconds(15f);
-        isFull = false;
-    }
+  
     public void OnDeath()
     {
         Instantiate(graveStone, transform.position, graveStone.transform.localRotation);
