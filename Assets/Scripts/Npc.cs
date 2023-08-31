@@ -7,30 +7,43 @@ using UnityEngine.AI;
 
 public class Npc : MonoBehaviour
 {
+    NavMeshAgent agent;
+
+    [Header("Bools")]
+    public bool hungry;
+    public bool happy;
+
+    [Header("Variables")]
     public float hunger;
     public float faith;
     public float age;
     public float maxAge;
-    public bool hungry;
-    public bool happy;
 
-    public List<Transform> points;
-    public GameObject graveStone;
-
-    NavMeshAgent agent;
     float timer;
-    public float cooldown;
-    float hungerTimer;
-    public float hungerCooldown;
     float ageTimer;
+    float hungerTimer;
+    [Header("Timers")]
     public float ageCooldwon;
+    public float cooldown;
+    public float hungerCooldown;
+
+    [Header("Lists")]
     public List<Transform> foodPos;
     public List<Transform> Taverns;
+    public List<Transform> points;
+    [Header("Objects")]
+    public GameObject graveStone;
+
+   
+   
+    
+ 
 
     
     // Start is called before the first frame update
     void Start()
     {
+        NPCDifference();
         agent = GetComponent<NavMeshAgent>();
         GetPosition();
      
@@ -180,12 +193,14 @@ public class Npc : MonoBehaviour
     public void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.CompareTag("food") && hungry == false)
+        if (collision.gameObject.CompareTag("food") && hungry == true)
         {
             collision.gameObject.GetComponent<Food>().foodStorage--;
+            hunger += 5;
+            CheckForHunger();
             GetPosition();
            
-            hunger++;
+            
         }
         if(collision.gameObject.CompareTag("Building"))
         {
@@ -222,6 +237,11 @@ public class Npc : MonoBehaviour
                 happy = false;
             }
         }
+    }
+    public void NPCDifference()
+    {
+        float ownAge = Random.Range(maxAge, maxAge * 2);
+        float ownHungerCooldown = Random.Range(hungerCooldown, hungerCooldown * 2);
     }
 
     Transform GetClosestTransform(List<Transform> list)

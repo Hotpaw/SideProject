@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -7,12 +8,16 @@ using UnityEngine.UIElements;
 public class BuildButton : MonoBehaviour
 {
     public int buttonId;
-    public string buttonName;
-    public string buttonDescription;
+    public TextMeshProUGUI NameText;
+    public TextMeshProUGUI costText;
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(NameText != null && costText != null) {
+        NameText.text = FindAnyObjectByType<BuildManager>().buildings[buttonId].buildingName;
+            costText.text = FindAnyObjectByType<BuildManager>().buildings[buttonId].buildCost.ToString();
+
+        }
     }
 
     public void Build()

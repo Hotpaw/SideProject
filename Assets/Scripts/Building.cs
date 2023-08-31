@@ -6,6 +6,8 @@ using UnityEngine.XR;
 public class Building : MonoBehaviour
 {
     Rigidbody rb;
+    public string buildingName;
+    public int buildCost;
     public Transform doorPoint;
     public enum BuildingType { House, Graveyard, Tavern, Food}
     public BuildingType houseType;

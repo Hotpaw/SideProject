@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e254cf48054c24685138c1cffd76f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingName: GraveYard
+  buildCost: 30
   doorPoint: {fileID: 8868242872563173520}
   houseType: 0
 --- !u!1 &8160173893509749190

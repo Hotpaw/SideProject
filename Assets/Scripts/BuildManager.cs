@@ -7,16 +7,19 @@ using UnityEngine.UI;
 
 public class BuildManager : MonoBehaviour
 {
+
     public List<Building> buildingsInScene;
     public List<Building> buildings;
     public List<GameObject> objects;
     public  List<Npc> npcs;
     UiManager uiManager;
+    GameManager gameManager;
 
     public int BuildID;
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = FindAnyObjectByType<GameManager>();
         uiManager = FindObjectOfType<UiManager>();
     }
 
@@ -38,22 +41,28 @@ public class BuildManager : MonoBehaviour
                 if (!hit.collider.CompareTag("Building") && !hit.collider.CompareTag("Enviroment"))
                 {
                  
-                   Building newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
-                   
-                   
-                    AiManager ai = FindObjectOfType<AiManager>();
-                    ai.BuildNavemshSurface();
-                    buildingsInScene.Add(newBuilding);
-                   
-                    if(BuildID != 4 && BuildID != 5 && BuildID != 6)
-                    {
-                        Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                        for (int i = 0; i < BuildID; i++)
-                        {
-                            Instantiate(npcs[0].gameObject, spawnpoint.position , npcs[0].transform.localRotation);
-                        }
+                  
 
+                    if (buildings[BuildID].GetComponent<Building>().buildCost <= gameManager.currency)
+                    {
+                        Building newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
+                        gameManager.ChangePoints(false, buildings[BuildID].GetComponent<Building>().buildCost, "Gold");
+
+                        AiManager ai = FindObjectOfType<AiManager>();
+                        ai.BuildNavemshSurface();
+                        buildingsInScene.Add(newBuilding);
+
+                        if (BuildID != 4 && BuildID != 5 && BuildID != 6)
+                        {
+                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                            for (int i = 0; i < BuildID; i++)
+                            {
+                                Instantiate(npcs[0].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                            }
+
+                        }
                     }
+                    
                 }
               
             }

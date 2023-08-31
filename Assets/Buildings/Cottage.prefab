@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 7896529740553073481}
   - component: {fileID: 6166837414211828193}
   m_Layer: 0
-  m_Name: large house
+  m_Name: Cottage
   m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,6 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e254cf48054c24685138c1cffd76f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingName: Cottage
+  buildCost: 30
   doorPoint: {fileID: 172311842916444981}
   houseType: 0
 --- !u!208 &6166837414211828193

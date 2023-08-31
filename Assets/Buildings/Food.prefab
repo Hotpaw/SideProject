@@ -141,6 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e254cf48054c24685138c1cffd76f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingName: Food
+  buildCost: 5
   doorPoint: {fileID: 3909151135502605598}
   houseType: 0
 --- !u!1 &6883485037745451563

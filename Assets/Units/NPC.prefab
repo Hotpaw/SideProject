@@ -142,19 +142,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f98c2d0490dce4eb025067d0512a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hunger: 10
-  faith: 0
-  age: 5
-  maxAge: 100
   hungry: 0
   happy: 1
-  points: []
-  graveStone: {fileID: 8935479186093378071, guid: 8bf85ecc2e88bc4448b7157595680705, type: 3}
+  hunger: 6
+  faith: 0
+  age: 5
+  maxAge: 75
+  ageCooldwon: 2
   cooldown: 10
   hungerCooldown: 10
-  ageCooldwon: 2
   foodPos: []
   Taverns: []
+  points: []
+  graveStone: {fileID: 8935479186093378071, guid: 8bf85ecc2e88bc4448b7157595680705, type: 3}
 --- !u!114 &-3161012846162417683
 MonoBehaviour:
   m_ObjectHideFlags: 0
