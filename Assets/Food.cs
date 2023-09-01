@@ -4,19 +4,30 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
+   
     public int foodStorage;
+    public int maxFoodstorage;
+    float timer;
+    float cooldown;
     // Start is called before the first frame update
     void Start()
     {
-     
+        foodStorage = maxFoodstorage;
+        cooldown = 10;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(foodStorage == 0)
+        timer += Time.deltaTime;
+        if(timer > cooldown)
         {
-            this.gameObject.SetActive(false);
+            timer = 0;
+            foodStorage++;
+            if(foodStorage > maxFoodstorage)
+            {
+                foodStorage = maxFoodstorage;
+            }
         }
     }
 }

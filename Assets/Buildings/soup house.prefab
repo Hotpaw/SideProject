@@ -5048,6 +5048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodStorage: 10
+  maxFoodstorage: 5
 --- !u!114 &4954680343856797423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5137,7 +5138,7 @@ Transform:
   m_GameObject: {fileID: 7425830062109983781}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.035338625, y: -0.021641182, z: 0.0024850562}
+  m_LocalPosition: {x: 0.0431, y: -0.0299, z: 0.0025}
   m_LocalScale: {x: 0.016340422, y: 0.01634042, z: 0.01634042}
   m_ConstrainProportionsScale: 0
   m_Children: []

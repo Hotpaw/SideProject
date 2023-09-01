@@ -52,7 +52,7 @@ public class BuildManager : MonoBehaviour
                         ai.BuildNavemshSurface();
                         buildingsInScene.Add(newBuilding);
 
-                        if (BuildID != 4 && BuildID != 5 && BuildID != 6)
+                        if (BuildID != 4 && BuildID != 5 && BuildID != 6 && BuildID != 7)
                         {
                             Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
                             for (int i = 0; i < BuildID; i++)
@@ -60,6 +60,11 @@ public class BuildManager : MonoBehaviour
                                 Instantiate(npcs[0].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
                             }
 
+                        }
+                        if(BuildID == 7)
+                        {
+                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                            Instantiate(npcs[1].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
                         }
                     }
                     

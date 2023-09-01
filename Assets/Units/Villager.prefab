@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6710756944610108076}
   - component: {fileID: -3161012846162417683}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: Villager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f98c2d0490dce4eb025067d0512a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NpcClass: 0
   hungry: 0
   happy: 1
   hunger: 6
@@ -170,3 +171,4 @@ MonoBehaviour:
   TaxAmount: 1
   cooldown: 10
   timer: 0
+  Taxing: 1

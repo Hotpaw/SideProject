@@ -23,7 +23,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.F)) 
+        {
+            ChangePoints(true, 100, "Gold");
 
+        }
     }
     public void ChangePoints(bool type, int amount, string name)
     {

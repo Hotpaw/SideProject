@@ -9,9 +9,16 @@ public class Npc : MonoBehaviour
 {
     NavMeshAgent agent;
 
+    
+    public enum Class { Villager, Hunter, Gravekeeper};
+    [Header("Class")]
+    public Class NpcClass;
+
+
     [Header("Bools")]
     public bool hungry;
     public bool happy;
+    public bool working;
 
     [Header("Variables")]
     public float hunger;
@@ -31,6 +38,7 @@ public class Npc : MonoBehaviour
     public List<Transform> foodPos;
     public List<Transform> Taverns;
     public List<Transform> points;
+    public List<Transform> animals;
     [Header("Objects")]
     public GameObject graveStone;
 
@@ -43,6 +51,7 @@ public class Npc : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        working = false;
         NPCDifference();
         agent = GetComponent<NavMeshAgent>();
         GetPosition();
@@ -56,7 +65,12 @@ public class Npc : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Timers();
+        timer += Time.deltaTime;
+        if (NpcClass == Class.Villager)
+        {
+
+        VillagerTimers();
+        }
         if (agent != null && agent.remainingDistance < 0.5 || timer >= cooldown)
         {
             timer = 0;
@@ -64,12 +78,12 @@ public class Npc : MonoBehaviour
         }
       
     }
-    public void Timers()
+    public void VillagerTimers()
     {
         hungerTimer += Time.deltaTime;
         ageTimer += Time.deltaTime;
 
-        timer += Time.deltaTime;
+       
 
         if (ageTimer >= ageCooldwon)
         {
@@ -94,58 +108,102 @@ public class Npc : MonoBehaviour
     }
     public void GetPosition()
     {
-       
+       if(NpcClass == Class.Hunter) {
+            HunterPositionData();
+        }
         
+        if(NpcClass == Class.Villager)
+        {
+            VillagerOnPositionData();
+        }
+
+
+    }
+    public void HunterPositionData()
+    {
+        List<Transform> trees = FindObjectOfType<SpawnManager>().TreeList;
+        AnimalBehavior[] animalArray = FindObjectsOfType<AnimalBehavior>();
+       
+        animals.Clear();
+        foreach(AnimalBehavior animal in animalArray)
+        {
+            if(!animals.Contains(animal.transform))
+            {
+                animals.Add(animal.transform);
+            }
+         
+        }
+        foreach (Transform t in trees)
+        {
+            if (!points.Contains(t.transform))
+            {
+                points.Add(t.transform);
+            }
+        }
+        Food[] foods = FindObjectsOfType<Food>();
+        foreach (var food in foods)
+        {
+            if (!foodPos.Contains(food.transform))
+            {
+
+                foodPos.Add(food.transform);
+            }
+        }
+        if (!working && animals.Count > 0)
+        {
+           
+           Debug.Log(" HUNTING");
+                agent.SetDestination(GetClosestTransform(animals).transform.position);
+ 
+
+        }
+        
+        if(working && foodPos.Count > 0)
+        {
+            
+            agent.SetDestination(GetClosestTransform(foodPos).transform.position);
+         }
+       
+
+         
+     
+        
+    }
+    public void VillagerOnPositionData()
+    {
 
 
         BuildManager buildManager = FindObjectOfType<BuildManager>();
-        foreach(Building building in buildManager.buildingsInScene)
+        foreach (Building building in buildManager.buildingsInScene)
         {
             if (!points.Contains(building.transform) && building.GetComponent<Building>().houseType != Building.BuildingType.Tavern && !building.CompareTag("food"))
             {
 
                 points.Add(building.transform);
             }
-            if(!Taverns.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !building.CompareTag("food"))
+            if (!Taverns.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !building.CompareTag("food"))
             {
                 Taverns.Add(building.transform);
             }
         }
-        //foreach (var building in buildManager.buildingsInScene)
-        //{
-        //    if (building.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
-        //    {
-               
-        //        Taverns.Add(building.transform);
 
-        //    }
-        //    else
-        //    {
-
-        //    }
-
-
-        //}
 
         Food[] foods = FindObjectsOfType<Food>();
-       foreach(var food in foods)
+        foreach (var food in foods)
         {
-            if (!foodPos.Contains(food.transform))
+            if (!foodPos.Contains(food.transform) && food.GetComponent<Food>().foodStorage > 0)
             {
 
-            foodPos.Add(food.transform);
+                foodPos.Add(food.transform);
             }
         }
-
-
-       
 
 
 
         if (foods.Length > 0 && hungry == true && happy == true)
         {
             GetClosestTransform(foodPos);
-
+            
 
             if (GetClosestTransform(foodPos).gameObject.activeInHierarchy)
             {
@@ -161,18 +219,16 @@ public class Npc : MonoBehaviour
         }
         else if (happy == false && Taverns.Count > 0)
         {
-            
-            
-               agent.SetDestination(GetClosestTransform(Taverns).transform.position);
 
-           
+
+            agent.SetDestination(GetClosestTransform(Taverns).transform.position);
+
+
         }
         else
         {
             agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
         }
-
-
 
     }
     public void OnRenderObject()
@@ -192,32 +248,54 @@ public class Npc : MonoBehaviour
    
     public void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.CompareTag("food") && hungry == true)
+        if(NpcClass == Class.Villager)
         {
-            collision.gameObject.GetComponent<Food>().foodStorage--;
-            hunger += 5;
-            CheckForHunger();
-            GetPosition();
-           
-            
+            if (collision.gameObject.CompareTag("food") && hungry == true)
+            {
+                collision.gameObject.GetComponent<Food>().foodStorage--;
+                hunger += 5;
+                CheckForHunger();
+                GetPosition();
+
+
+            }
+            if (collision.gameObject.CompareTag("Building"))
+            {
+                if (collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
+                    Debug.Log(" HAPPY ");
+                happy = true;
+            }
+            else
+            {
+                return;
+            }
         }
-        if(collision.gameObject.CompareTag("Building"))
+        if(NpcClass == Class.Hunter)
         {
-            if(collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
-            Debug.Log(" HAPPY ");
-            happy = true;
+            if (collision.gameObject.CompareTag("Animal") && working == false)
+            {
+                collision.gameObject.SetActive(false);
+                working = true;
+
+               
+            }
+            if (collision.gameObject.CompareTag("food") && working == true)
+            {
+                Debug.Log(" FOOD DELIEVERED");
+                collision.gameObject.GetComponent<Food>().foodStorage += collision.gameObject.GetComponent<Food>().maxFoodstorage / 2;
+                working = false;
+            }
+            else { return; }
         }
-        else
-        {
-            return;
-        }
+    
+      
+       
     }
     public void CheckForHunger()
     {
         if(hunger <= 5)
         {
-            Debug.Log("HUNGRY");
+          
             hungry = true;
            
         }
