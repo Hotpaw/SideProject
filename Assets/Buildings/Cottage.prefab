@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingName: Cottage
-  buildCost: 30
+  buildCost: 28
   doorPoint: {fileID: 172311842916444981}
   houseType: 0
 --- !u!208 &6166837414211828193

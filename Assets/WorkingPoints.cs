@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AnimalBehavior : MonoBehaviour
+public class WorkingPoints : MonoBehaviour
 {
     NavMeshAgent agent;
     float timer;

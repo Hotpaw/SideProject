@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currency = 10;
+       
         faith = 0;
         currencyText.text = currency.ToString();
         faithText.text = faith.ToString();

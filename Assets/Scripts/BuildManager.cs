@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,7 +9,8 @@ using UnityEngine.UI;
 
 public class BuildManager : MonoBehaviour
 {
-
+    [Tooltip("The index of buildings that should not spawn Villagers")]
+    public int[] npcRegex;
     public List<Building> buildingsInScene;
     public List<Building> buildings;
     public List<GameObject> objects;
@@ -51,8 +54,10 @@ public class BuildManager : MonoBehaviour
                         AiManager ai = FindObjectOfType<AiManager>();
                         ai.BuildNavemshSurface();
                         buildingsInScene.Add(newBuilding);
+                        float offset = 1f;
+                        newBuilding.transform.position = hit.point + new Vector3(0,offset, 0);
 
-                        if (BuildID != 4 && BuildID != 5 && BuildID != 6 && BuildID != 7)
+                        if (!npcRegex.Contains(BuildID))
                         {
                             Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
                             for (int i = 0; i < BuildID; i++)
@@ -65,6 +70,16 @@ public class BuildManager : MonoBehaviour
                         {
                             Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
                             Instantiate(npcs[1].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                        }
+                        if (BuildID == 6)
+                        {
+                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                            Instantiate(npcs[2].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                        }
+                        if (BuildID == 8)
+                        {
+                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                            Instantiate(npcs[3].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
                         }
                     }
                     

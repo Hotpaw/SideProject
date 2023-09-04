@@ -4,13 +4,15 @@ using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
 public class Npc : MonoBehaviour
 {
     NavMeshAgent agent;
 
     
-    public enum Class { Villager, Hunter, Gravekeeper};
+    public enum Class { Villager, Hunter, Gravekeeper, Missionary};
     [Header("Class")]
     public Class NpcClass;
 
@@ -36,18 +38,17 @@ public class Npc : MonoBehaviour
 
     [Header("Lists")]
     public List<Transform> foodPos;
-    public List<Transform> Taverns;
+    public List<Transform> SpecialBuildings;
     public List<Transform> points;
-    public List<Transform> animals;
+    public List<Transform> ClassIntrestPoints;
     [Header("Objects")]
     public GameObject graveStone;
 
-   
-   
-    
- 
 
-    
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,16 +56,16 @@ public class Npc : MonoBehaviour
         NPCDifference();
         agent = GetComponent<NavMeshAgent>();
         GetPosition();
-     
-        hungry = false;
-      
-       
-      
-    }
 
-    // Update is called once per frame
+        hungry = false;
+
+
+
+    }
+        // Update is called once per frame
     void Update()
     {
+        navAgentSafeMode();
         timer += Time.deltaTime;
         if (NpcClass == Class.Villager)
         {
@@ -74,6 +75,11 @@ public class Npc : MonoBehaviour
         if (agent != null && agent.remainingDistance < 0.5 || timer >= cooldown)
         {
             timer = 0;
+            if(happy && NpcClass == Class.Villager)
+            {
+                GameManager gameManager = FindObjectOfType<GameManager>();
+                gameManager.ChangePoints(true, 1, "Faith");
+            }
             GetPosition();
         }
       
@@ -116,20 +122,28 @@ public class Npc : MonoBehaviour
         {
             VillagerOnPositionData();
         }
+        if(NpcClass == Class.Gravekeeper)
+        {
+            GraveKeeperPositionData();
+        }
+        if (NpcClass == Class.Missionary)
+        {
+            MissionaryPositionData();
+        }
 
 
     }
     public void HunterPositionData()
     {
         List<Transform> trees = FindObjectOfType<SpawnManager>().TreeList;
-        AnimalBehavior[] animalArray = FindObjectsOfType<AnimalBehavior>();
+        WorkingPoints[] animalArray = FindObjectsOfType<WorkingPoints>();
        
-        animals.Clear();
-        foreach(AnimalBehavior animal in animalArray)
+        ClassIntrestPoints.Clear();
+        foreach(WorkingPoints animal in animalArray)
         {
-            if(!animals.Contains(animal.transform))
+            if(!ClassIntrestPoints.Contains(animal.transform))
             {
-                animals.Add(animal.transform);
+                ClassIntrestPoints.Add(animal.transform);
             }
          
         }
@@ -149,11 +163,11 @@ public class Npc : MonoBehaviour
                 foodPos.Add(food.transform);
             }
         }
-        if (!working && animals.Count > 0)
+        if (!working && ClassIntrestPoints.Count > 0)
         {
            
            Debug.Log(" HUNTING");
-                agent.SetDestination(GetClosestTransform(animals).transform.position);
+                agent.SetDestination(GetClosestTransform(ClassIntrestPoints).transform.position);
  
 
         }
@@ -176,14 +190,14 @@ public class Npc : MonoBehaviour
         BuildManager buildManager = FindObjectOfType<BuildManager>();
         foreach (Building building in buildManager.buildingsInScene)
         {
-            if (!points.Contains(building.transform) && building.GetComponent<Building>().houseType != Building.BuildingType.Tavern && !building.CompareTag("food"))
+            if (!points.Contains(building.transform) && building.GetComponent<Building>().houseType != Building.BuildingType.Church && building.GetComponent<Building>().houseType != Building.BuildingType.Tavern && !building.CompareTag("food"))
             {
 
                 points.Add(building.transform);
             }
-            if (!Taverns.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !building.CompareTag("food"))
+            if (!SpecialBuildings.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Tavern && !building.CompareTag("food"))
             {
-                Taverns.Add(building.transform);
+                SpecialBuildings.Add(building.transform);
             }
         }
 
@@ -217,17 +231,84 @@ public class Npc : MonoBehaviour
 
 
         }
-        else if (happy == false && Taverns.Count > 0)
+        else if (happy == false && SpecialBuildings.Count > 0)
         {
 
 
-            agent.SetDestination(GetClosestTransform(Taverns).transform.position);
+            agent.SetDestination(GetClosestTransform(SpecialBuildings).transform.position);
 
 
         }
         else
         {
             agent.SetDestination(points[Random.Range(0, points.Count)].transform.position);
+        }
+
+    }
+    public void GraveKeeperPositionData()
+    {
+        GraveStone[] graveStones = FindObjectsOfType<GraveStone>();
+        ClassIntrestPoints.Clear();
+        BuildManager buildManager = FindObjectOfType<BuildManager>();
+        foreach (Building building in buildManager.buildingsInScene)
+        {
+            if (!points.Contains(building.transform) && building.GetComponent<Building>().houseType != Building.BuildingType.Graveyard && !building.CompareTag("food"))
+            {
+                points.Add(building.transform);
+            }
+            if (!SpecialBuildings.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Graveyard && !building.CompareTag("food"))
+            {
+                SpecialBuildings.Add(building.transform);
+            }
+        }
+        foreach (GraveStone gravestone in graveStones)
+        {
+            if (!ClassIntrestPoints.Contains(gravestone.transform))
+            {
+                ClassIntrestPoints.Add(gravestone.transform);
+            }
+
+        }
+        if(ClassIntrestPoints.Count > 0 && working == false)
+        {
+        agent.SetDestination(GetClosestTransform(ClassIntrestPoints).transform.position);
+
+        }
+        if(working == true)
+        {
+            agent.SetDestination(GetClosestTransform(SpecialBuildings).transform.position);
+        }
+
+    }
+    public void MissionaryPositionData()
+    {
+        Npc[] npcs = FindObjectsOfType<Npc>();
+        ClassIntrestPoints.Clear();
+        BuildManager buildManager = FindObjectOfType<BuildManager>();
+        foreach (Building building in buildManager.buildingsInScene)
+        {
+            if (!SpecialBuildings.Contains(building.transform) && building.GetComponent<Building>().houseType == Building.BuildingType.Church && !building.CompareTag("food"))
+            {
+                SpecialBuildings.Add(building.transform);
+            }
+         
+        }
+        foreach (Npc villager in npcs)
+        {
+            if (!ClassIntrestPoints.Contains(villager.transform) && villager.GetComponent<Npc>().NpcClass == Class.Villager && villager.gameObject.activeInHierarchy)
+            {
+                ClassIntrestPoints.Add(villager.transform);
+            }
+
+        }
+        if (ClassIntrestPoints.Count > 0 && working == true)
+        {
+            agent.SetDestination(ClassIntrestPoints[Random.Range(0,ClassIntrestPoints.Count)].transform.position);
+
+        }
+        if (working == false)
+        {
+            agent.SetDestination(GetClosestTransform(SpecialBuildings).transform.position);
         }
 
     }
@@ -245,7 +326,17 @@ public class Npc : MonoBehaviour
            
         }
     }
-   
+    public void navAgentSafeMode()
+    {
+        if (!agent.hasPath && agent.pathStatus == NavMeshPathStatus.PathComplete)
+        {
+            
+            agent.enabled = false;
+            agent.enabled = true;
+           
+           
+        }
+    }
     public void OnCollisionEnter(Collision collision)
     {
         if(NpcClass == Class.Villager)
@@ -287,9 +378,60 @@ public class Npc : MonoBehaviour
             }
             else { return; }
         }
-    
-      
-       
+        if (NpcClass == Class.Gravekeeper)
+        {
+            if (collision.gameObject.GetComponent<GraveStone>() && working == false)
+            {
+                collision.gameObject.SetActive(false);
+                graveStone.SetActive(true);
+                working = true;
+
+
+            }
+            if (collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Graveyard && working == true)
+            {
+                graveStone.SetActive(false);
+                
+                working = false;
+            }
+            else { return; }
+        }
+        if(NpcClass == Class.Missionary)
+        {
+            
+            if(collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Church && working == false)
+            {
+                Debug.Log(collision.gameObject.name);
+                working = true;
+            }
+        }
+
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if(NpcClass == Class.Missionary){
+            if (other.gameObject.GetComponent<Npc>().NpcClass == Class.Villager && working == true && other.gameObject.activeInHierarchy)
+            {
+
+                GameManager gameManager = FindAnyObjectByType<GameManager>();
+                gameManager.ChangePoints(true, 1, "Faith");
+                working = false;
+            }
+        }
+    }
+    public void OnCollisionStay(Collision collision)
+    {
+        if(NpcClass == Class.Gravekeeper)
+        {
+
+        if (collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Graveyard && working == true)
+        {
+            graveStone.SetActive(false);
+
+            working = false;
+        }
+        else { return; }
+        }
     }
     public void CheckForHunger()
     {
@@ -318,8 +460,10 @@ public class Npc : MonoBehaviour
     }
     public void NPCDifference()
     {
-        float ownAge = Random.Range(maxAge, maxAge * 2);
-        float ownHungerCooldown = Random.Range(hungerCooldown, hungerCooldown * 2);
+        float ownAge = Random.Range(maxAge / 2, maxAge * 2);
+        float ownHungerCooldown = Random.Range(hungerCooldown / 2, hungerCooldown * 2);
+        maxAge = ownAge;
+        hungerCooldown = ownHungerCooldown;
     }
 
     Transform GetClosestTransform(List<Transform> list)
@@ -343,8 +487,10 @@ public class Npc : MonoBehaviour
   
     public void OnDeath()
     {
+        Debug.Log("My Age: " + age);
+        Debug.Log("My Hunger: " + hunger);
         Instantiate(graveStone, transform.position, graveStone.transform.localRotation);
         gameObject.SetActive(false);
     }
-
+    
 }

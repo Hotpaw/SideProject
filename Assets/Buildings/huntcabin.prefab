@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingName: Hunting Cabin
-  buildCost: 15
+  buildCost: 35
   doorPoint: {fileID: 818402706911223801}
   houseType: 0
 --- !u!65 &9032598099552684077

@@ -9,7 +9,7 @@ public class Building : MonoBehaviour
     public string buildingName;
     public int buildCost;
     public Transform doorPoint;
-    public enum BuildingType { House, Graveyard, Tavern, Food}
+    public enum BuildingType { House, Graveyard, Tavern, Food, Church}
     public BuildingType houseType;
    
     // Start is called before the first frame update
