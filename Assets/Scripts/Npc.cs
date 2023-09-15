@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Tilemaps;
-using static UnityEditor.PlayerSettings;
+
 
 public class Npc : MonoBehaviour
 {
@@ -341,15 +341,7 @@ public class Npc : MonoBehaviour
     {
         if(NpcClass == Class.Villager)
         {
-            if (collision.gameObject.CompareTag("food") && hungry == true)
-            {
-                collision.gameObject.GetComponent<Food>().foodStorage--;
-                hunger += 5;
-                CheckForHunger();
-                GetPosition();
-
-
-            }
+          
             if (collision.gameObject.CompareTag("Building"))
             {
                 if (collision.gameObject.GetComponent<Building>().houseType == Building.BuildingType.Tavern)
@@ -409,6 +401,18 @@ public class Npc : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
+        if(NpcClass == Class.Villager)
+        {
+            if (other.gameObject.CompareTag("food") && hungry == true)
+            {
+                other.gameObject.GetComponent<Food>().foodStorage--;
+                hunger += 5;
+                CheckForHunger();
+                GetPosition();
+
+
+            }
+        }
         if(NpcClass == Class.Missionary){
             if (other.gameObject.GetComponent<Npc>().NpcClass == Class.Villager && working == true && other.gameObject.activeInHierarchy)
             {

@@ -80,6 +80,7 @@ public class BuildManager : MonoBehaviour
                         {
                             Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
                             Instantiate(npcs[3].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                           
                         }
                     }
                     
@@ -88,5 +89,8 @@ public class BuildManager : MonoBehaviour
             }
         }
     }
-  
+  public void SpawnNPCS(Npc npc, Vector3 position, Quaternion rotation)
+    {
+        Instantiate(npc,position, rotation);
+    }
 }
