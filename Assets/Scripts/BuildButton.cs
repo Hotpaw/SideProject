@@ -8,13 +8,16 @@ using UnityEngine.UIElements;
 public class BuildButton : MonoBehaviour
 {
     public int buttonId;
+    public enum Type { building, upgrade}
+    public Type type;
     public TextMeshProUGUI NameText;
     public TextMeshProUGUI costText;
     // Start is called before the first frame update
     void Start()
     {
-        if(NameText != null && costText != null) {
-        NameText.text = FindAnyObjectByType<BuildManager>().buildings[buttonId].buildingName;
+        if (NameText != null && costText != null)
+        {
+            NameText.text = FindAnyObjectByType<BuildManager>().buildings[buttonId].buildingName;
             costText.text = FindAnyObjectByType<BuildManager>().buildings[buttonId].buildCost.ToString();
 
         }
@@ -22,11 +25,16 @@ public class BuildButton : MonoBehaviour
 
     public void Build()
     {
-       
-        if(buttonId == 0)
+
+        if (buttonId == 100)
         {
             UiManager ui = FindObjectOfType<UiManager>();
-            ui.DescWinEnable();
+            ui.DescWinEnable(0);
+        }
+        else if (buttonId == 200)
+        {
+            UiManager ui = FindObjectOfType<UiManager>();
+            ui.DescWinEnable(1);
         }
         else
         {
@@ -38,5 +46,5 @@ public class BuildButton : MonoBehaviour
 
     }
 }
-   
+
 

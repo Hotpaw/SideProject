@@ -14,9 +14,12 @@ public class BuildManager : MonoBehaviour
     public List<Building> buildingsInScene;
     public List<Building> buildings;
     public List<GameObject> objects;
-    public  List<Npc> npcs;
+    public List<Npc> npcs;
     UiManager uiManager;
     GameManager gameManager;
+
+    public int townHallLevel = 1;
+    public int maxBuildings = 3;
 
     public int BuildID;
     // Start is called before the first frame update
@@ -29,68 +32,84 @@ public class BuildManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+
 
 
         if (Input.GetMouseButtonDown(0) && BuildID != 0)
         {
-            
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100.0f) && !uiManager.IsPointerOverUIObject())
+            if (buildingsInScene.Count >= maxBuildings)
             {
-               
-
-                if (!hit.collider.CompareTag("Building") && !hit.collider.CompareTag("Enviroment"))
+                PopUpText.INSTANCE.PopUpMessage(" Upgrade Your Townhall to build more buildings!", Color.red);
+                return;
+            }else if(BuildID == 9)
+            {
+                if (BuildID == 9)
                 {
-                 
-                  
-
-                    if (buildings[BuildID].GetComponent<Building>().buildCost <= gameManager.currency)
-                    {
-                        Building newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
-                        gameManager.ChangePoints(false, buildings[BuildID].GetComponent<Building>().buildCost, "Gold");
-
-                        AiManager ai = FindObjectOfType<AiManager>();
-                        ai.BuildNavemshSurface();
-                        buildingsInScene.Add(newBuilding);
-                        float offset = 1f;
-                        newBuilding.transform.position = hit.point + new Vector3(0,offset, 0);
-
-                        if (!npcRegex.Contains(BuildID))
-                        {
-                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                            for (int i = 0; i < BuildID; i++)
-                            {
-                                Instantiate(npcs[0].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
-                            }
-
-                        }
-                        if(BuildID == 7)
-                        {
-                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                            Instantiate(npcs[1].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
-                        }
-                        if (BuildID == 6)
-                        {
-                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                            Instantiate(npcs[2].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
-                        }
-                        if (BuildID == 8)
-                        {
-                            Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
-                            Instantiate(npcs[3].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
-                           
-                        }
-                    }
-                    
+                    townHallLevel++;
+                    maxBuildings += 5;
                 }
-              
             }
+            else
+            {
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit, 100.0f) && !uiManager.IsPointerOverUIObject())
+                {
+
+
+                    if (!hit.collider.CompareTag("Building") && !hit.collider.CompareTag("Enviroment"))
+                    {
+
+
+
+                        if (buildings[BuildID].GetComponent<Building>().buildCost <= gameManager.currency)
+                        {
+                            Building newBuilding = Instantiate(buildings[BuildID], hit.point, buildings[BuildID].transform.localRotation);
+                            gameManager.ChangePoints(false, buildings[BuildID].GetComponent<Building>().buildCost, "Gold");
+
+                            AiManager ai = FindObjectOfType<AiManager>();
+                            ai.BuildNavemshSurface();
+                            buildingsInScene.Add(newBuilding);
+                            float offset = 1f;
+                            newBuilding.transform.position = hit.point + new Vector3(0, offset, 0);
+
+                            if (!npcRegex.Contains(BuildID))
+                            {
+                                Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                                for (int i = 0; i < BuildID; i++)
+                                {
+                                    Instantiate(npcs[0].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                                }
+
+                            }
+                            if (BuildID == 7)
+                            {
+                                Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                                Instantiate(npcs[1].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                            }
+                            if (BuildID == 6)
+                            {
+                                Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                                Instantiate(npcs[2].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+                            }
+                            if (BuildID == 8)
+                            {
+                                Transform spawnpoint = newBuilding.GetComponent<Building>().doorPoint;
+                                Instantiate(npcs[3].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
+
+                            }
+                          
+                        }
+
+                    }
+
+                }
+            }
+          
         }
     }
-  public void SpawnNPCS(Npc npc, Vector3 position, Quaternion rotation)
+    public void SpawnNPCS(Npc npc, Vector3 position, Quaternion rotation)
     {
-        Instantiate(npc,position, rotation);
+        Instantiate(npc, position, rotation);
     }
 }

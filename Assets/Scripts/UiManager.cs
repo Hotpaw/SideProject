@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class UiManager : MonoBehaviour
 {
-    public GameObject descWindow;
+    public GameObject[] descWindow;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,17 +26,41 @@ public class UiManager : MonoBehaviour
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
         return results.Count > 0;
     }
-    public void DescWinEnable()
+    public void DescWinEnable(int a)
     {
-
-        if (descWindow.activeInHierarchy)
+        foreach (GameObject go in descWindow)
         {
-
-       descWindow.SetActive(false);
+            if(go.activeInHierarchy)
+            {
+            go.SetActive(false);
+                return;
+            }
         }
-        else
+        if(a == 0)
         {
-            descWindow.SetActive(true);
+            if (descWindow[0].activeInHierarchy)
+            {
+
+                descWindow[0].SetActive(false);
+            }
+            else
+            {
+                descWindow[0].SetActive(true);
+            }
         }
+        if(a == 1)
+        {
+            if (descWindow[1].activeInHierarchy)
+            {
+
+                descWindow[1].SetActive(false);
+            }
+            else
+            {
+                descWindow[1].SetActive(true);
+            }
+        }
+       
     }
+
 }
