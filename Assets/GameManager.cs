@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager INSTANCE;
 
     public TextMeshProUGUI currencyText;
     public TextMeshProUGUI faithText;
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        INSTANCE = this;
        
         faith = 0;
         currencyText.text = currency.ToString();

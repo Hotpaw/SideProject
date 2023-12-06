@@ -41,13 +41,6 @@ public class BuildManager : MonoBehaviour
             {
                 PopUpText.INSTANCE.PopUpMessage(" Upgrade Your Townhall to build more buildings!", Color.red);
                 return;
-            }else if(BuildID == 9)
-            {
-                if (BuildID == 9)
-                {
-                    townHallLevel++;
-                    maxBuildings += 5;
-                }
             }
             else
             {
@@ -98,14 +91,18 @@ public class BuildManager : MonoBehaviour
                                 Instantiate(npcs[3].gameObject, spawnpoint.position, npcs[0].transform.localRotation);
 
                             }
-                          
+
+                        }
+                        else
+                        {
+                            PopUpText.INSTANCE.PopUpMessage("")
                         }
 
                     }
 
                 }
             }
-          
+
         }
     }
     public void SpawnNPCS(Npc npc, Vector3 position, Quaternion rotation)

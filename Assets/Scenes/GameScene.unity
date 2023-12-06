@@ -477,6 +477,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpgradeTemplate
       objectReference: {fileID: 0}
+    - target: {fileID: 4984392094319590190, guid: 4198416bafd974d47a11b347e3c114a1, type: 3}
+      propertyPath: buttonId
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 6694027385631220152, guid: 4198416bafd974d47a11b347e3c114a1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -5998,6 +6002,10 @@ PrefabInstance:
     - target: {fileID: 3967859731454720426, guid: 4198416bafd974d47a11b347e3c114a1, type: 3}
       propertyPath: m_Name
       value: BuildButtonTemplate
+      objectReference: {fileID: 0}
+    - target: {fileID: 4984392094319590190, guid: 4198416bafd974d47a11b347e3c114a1, type: 3}
+      propertyPath: buttonId
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6694027385631220152, guid: 4198416bafd974d47a11b347e3c114a1, type: 3}
       propertyPath: m_IsActive
